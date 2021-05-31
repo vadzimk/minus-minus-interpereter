@@ -73,7 +73,7 @@ void chop(string &str, int x);
 
 class Program {
 private:
-    string progLine[SIZE];
+    string progLine[SIZE]; // array holds program lines
     SymbolTable methods; // for the functions and procedures
     Stack<int> stack;
     string lastToken;
@@ -93,7 +93,6 @@ public:
 
     //Get SymbolTable of localVars and parameters passed via s (in parenthesis), Take every argument in s and either push a zero onto the stack or push the parsed value
     int countArguments(SymbolTable &localVars, string &s);
-
     bool errorMsg(string msg); // Print the msg as an error with the line number, Increment errorCount
     int getLineNumber(); // returns the current line number being interpreted
     int getErrorCount(); // returns current errrorCount
@@ -131,8 +130,7 @@ s is changed (factor is removed) */
     void push(int line); // push current line onto stack
     void push(string v, SymbolTable &localVars); // push local variable space onto stack and add variable to localVars
 
-    void setLineNumber(
-            int lineNum); // set the program line number to lineNum (i.e. go to a particular part of the MinusMinus program)
+    void setLineNumber(int lineNum); // set the program line number to lineNum (i.e. go to a particular part of the MinusMinus program)
 
 
     /**

@@ -248,7 +248,7 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
         // switch (++p) // now to start executing function/procedure code
         ++p; // point to next command
         Commands cmd;
-        cmd *= p;
+        cmd *= p; // ASSIGN
         /*
         string str;
         str *= p;
@@ -350,6 +350,41 @@ int parseEquation(Program &p, string exp, SymbolTable &local, bool &success) {
     int temp;
     string s = p.nextFactor(exp), op, operand1;
     // TODO fill in the code
+//    Seems that parseEquation has a few minor clarifications:
+//
+//    1. The string variables of op, and operand1 don't seemed to be used if you follow the logic of the pseudocode
+//
+//    2. The nextFactor will put a tilde (~) on front of a function call, not parseEquation (parseEquation may ensure it is there but that's it).
+    /*
+     while s is not blank
+     {
+        if first character isalpha or isdigit or checkFirstChar(s, FUNCTION_ARG)
+          push s onto postFix
+        else if s is "("
+          push s onto operatorStack
+        else if isOperator(s)
+          while !operatorStack.isEmpty and operatorStack.peek is not a ‘(’ and
+                     precedence(s <= precedence(operatorStack.peek()))
+          {
+               push operatorStack.peek() to postFix
+               operatorStack.pop()
+          }
+          operatorStack.push(s)
+        else if s is ")"
+          while (operatorStack.peek() is not a ‘(’)
+          {
+               push operatorStack.peek() to postFix
+               operatorStack.pop()
+          }
+          operatorStack.pop()     // remove open
+       } end while
+       while (!operatorStack.isEmpty())
+       {
+           push operatorStack.peek() to postFix
+           operatorStack.pop()
+       }
+
+     */
     temp = calculate(p, postFix, local, success);
     p.setLineNumber(oldLineNumber);
     return temp;

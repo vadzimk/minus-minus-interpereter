@@ -45,7 +45,9 @@ void chop(string &str, int x) {
         str = "";
 } // end chop
 
-
+/**
+ * @return one of Commands enums
+ * */
 Commands Program::convertLine(string &c) {
     command = UNKNOWN;
     string cmdText = nextToken(c, END_CMD);
@@ -170,12 +172,19 @@ bool Program::isValidID(string id) {
     return valid;
 } // end isValidID
 
+
+/**
+ * @param inFile mm source code file
+ * @param list boolean directs to list the source code
+ * @post SymbolTable 'methods' created
+ * */
 bool Program::loadProg(ifstream &inFile,
                        bool list) // load the program using inFile given. Return true if successful else false
 {
     bool read = false;
     Commands cmd;
     Symbol s;
+    int temp;
 
     if (inFile.fail())
         cout << "Could not open file" << endl;
@@ -183,6 +192,9 @@ bool Program::loadProg(ifstream &inFile,
         read = true;
         while (!inFile.eof() && size < SIZE) {
             getline(inFile, line);
+            temp = line.length();
+            if (temp > 0 && line[temp-1] < ' ')
+                line[temp-1] = ' '; // remove returns
             progLine[size] = line;
             size++;
             if (list)
@@ -191,16 +203,16 @@ bool Program::loadProg(ifstream &inFile,
         lineNumber = 0;
         for (int i = 0; i < size; i++) {
             line = progLine[lineNumber];
+            lineNumber++;
             cmd = convertLine(line);
             string method = nextToken(line, END_PAREN);
             if (cmd == FUNCTION) {
-                s = Symbol(method, lineNumber, FUNC);
+                s =  Symbol(method,lineNumber-1, FUNC);
                 methods.add(s);
             } else if (cmd == PROCEDURE) {
-                s = Symbol(method, lineNumber, PROC);
+                s =  Symbol(method,lineNumber-1, PROC);
                 methods.add(s);
             }
-            lineNumber++;
         }
     }
     return read;
@@ -455,7 +467,7 @@ void Program::pop(int x) // pop last x items from stack
 }
 
 /** precedence
- return precedence of two operators (*, /, % have precedence of 1, all others precedence of 0)
+ return precedence of three operators (*, /, % have precedence of 1, all others precedence of 0)
  */
 int Program::precedence(string s) {
     int pred = 0;
