@@ -1,27 +1,19 @@
 //
-//  Stack.cpp
-//  MinusMinus
 //
-//  Created by Tony Biehl on 8/15/16.
-//  Copyright © 2016 Tony Biehl. All rights reserved.
-//
-
+#include <iostream>
 #include "Stack.h"
 
+using namespace std;
 #ifndef Stack_cpp
 #define Stack_cpp
-#include <iostream>
-
-using namespace std;
-
-//** Stack
+// Stack
 template<class T>
 Stack<T>::Stack()
 {
     size = 0;
 }
 
-//** push
+// push
 // push value onto stack, return true if successful, else false
 template<class T>
 bool Stack<T>::push(T value)
@@ -33,7 +25,7 @@ bool Stack<T>::push(T value)
     return true;
 }
 
-//** pop
+// pop
 // pop value from stack, return true if successful, else false
 template<class T>
 bool Stack<T>::pop()
@@ -45,7 +37,7 @@ bool Stack<T>::pop()
     return false;
 }
 
-//** pop(num)
+// pop(num)
 // pop number of values from stack, return true if successful, else false
 template<class T>
 bool Stack<T>::pop(int num) {
@@ -56,7 +48,7 @@ bool Stack<T>::pop(int num) {
     return false;
 }
 
-//** peek(index, success)
+// peek(index, success)
 // peek value from stack using the index. Return success false if out of range and values[0],
 //       else true and correct value
 template<class T>
@@ -70,7 +62,7 @@ T Stack<T>::peek(int index, bool& success){
     return values[index];
 }
 
-//** peek
+// peek
 // peek value from top of stack. if stack empty then values[0] (can be invalid)
 template<class T>
 T Stack<T>::peek() {
@@ -80,7 +72,7 @@ T Stack<T>::peek() {
     return temp; // empty stack
 }
 
-//** poke(index, value)
+// poke(index, value)
 // poke value to stack using the index. Return false if out of range, else true
 template<class T>
 bool Stack<T>::poke(int index, T value) {
@@ -90,20 +82,18 @@ bool Stack<T>::poke(int index, T value) {
     return true;
 }
 
-//** getStackSize
+// getStackSize
 // return the number of items on stack
 template<class T>
 int Stack<T>::getStackSize() {
     return size;
 }
 
-//** clear
+// clear
 // clear the stack;
 template<class T>
 void Stack<T>::clear() {
     size = 0;
 }
 
-
 #endif
-

@@ -9,7 +9,6 @@ add_executable(MinusMinusV3Shell
         main.cpp
         Program.cpp
         Program.h
-        Stack.cpp
         Stack.h
         support.cpp
         support.hpp

@@ -1,0 +1,5 @@
+# ninja log v5
+147	2562	643076447	CMakeFiles/MinusMinusV3Shell.dir/Stack.cpp.obj	7686d49ce7ddf71e
+223	6369	643076451	CMakeFiles/MinusMinusV3Shell.dir/SymbolTable.cpp.obj	a6ca6c1566f0a8c4
+2	6373	643076451	CMakeFiles/MinusMinusV3Shell.dir/main.cpp.obj	4b977535814872cf
+66	6436	643076451	CMakeFiles/MinusMinusV3Shell.dir/support.cpp.obj	50b3537ae521e9a4
