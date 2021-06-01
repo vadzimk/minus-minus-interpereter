@@ -320,11 +320,17 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
                 break;
             }
             case ENDIF:
-// TODO fill in the code
-//            {
-//                if(numIfs == )
-//            }
-//                break;
+                // TODO fill in the code  --done
+            {
+                //Make sure you have a matching if (i.e. numIfs) and decrement numIfs
+                if (numIfs == temp) {
+                    numIfs--;
+                } else {
+                    p.errorMsg("Missing if");
+                }
+                break;
+            }
+
             case ENDPROGRAM: // ran out of code
                 run = false;
                 return; // exit
@@ -337,8 +343,30 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
 
                 return; // exit
             case IF:
-// TODO fill in the code
+// TODO fill in the code -- not sure
+            {
+                success = compareBool(p, local);
+                if (success) {
+                    numIfs++;
+                } else {
+                    temp = 1; //temp = # of end if (looking for one endif)
+                    do {
+                        command = UNKNOWN; // TODO -- not sure this should be here
+                        while (command != ENDIF &&
+                               command != ENDPROGRAM &&
+                               command != FUNCTION &&
+                               command != PROCEDURE) {
+                            if (command == IF)
+                                temp++; //nested if, another endif
+                            command = ++p;
+                        }
+                        temp--;
+                    } while (temp != 0);
+                    if (command != ENDIF)
+                        p.errorMsg("If with no matching endIf");
+                }
                 break;
+            }
             case INPUT:
                 // TODO fill in the code
                 break;
@@ -446,7 +474,7 @@ int parseEquation(Program &p, string exp, SymbolTable &local, bool &success) {
             operatorStack.pop(); // remove (
         }
     }
-    while(operatorStack.getStackSize()){
+    while (operatorStack.getStackSize()) {
         postFix.push(operatorStack.peek());
         operatorStack.pop();
     }
