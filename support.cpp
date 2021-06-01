@@ -257,20 +257,74 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
         */
         switch (cmd) {
             case ASSIGN:
-                // TODO fill in the code
+                // TODO fill in the code --done
+            {
+                variable *= p;  // get the last token  -- get lhs
+                p -= CMD; // get next token -- move to the next token
+                token *= p; // get the last token  --get operator
+                if (token != ":=") {
+                    p.errorMsg("not assign statement"); // this is redundatnt bc ASSIGN has determined it already
+                }
+                p -= EQUATION; // get next token to the end of the line
+                token *= p; // get the last token -- rhs
+                temp = parseEquation(p, token, local, success); // calculated value is int
+                p.poke(variable, temp, local); // place variable on the stack
                 break;
+            }
             case CALL:
-                // TODO fill in the code
+                // TODO fill in the code -- params are not done
+            {
+                method *= p; // get last token --method name that was called
+                lookup = Symbol(method, 0, PROC);  // create a symbol for the method
+                bool found = p.getMethod(lookup);
+                if (!found) {
+                    p.errorMsg("Not found: " + method);
+                } else {
+                    SymbolTable localVar;  // new local symbol table for the call
+                    p -= OPEN_PARM;
+
+
+                    string params;
+                    params *= p; // get the last token --params
+                    cout << "params: " << params << endl; // params  TODO not working
+
+//                    p.push(p.getLineNumber()); // push the return line number on p's stack
+//                    p.countArguments(localVar,params);  // push local variables on the stack
+//                    execute(p, localVar, lookup.getOffset(), temp);
+                }
+
+            }
                 break;
-            case COMMENT:
-            case BLANK:
+            case COMMENT:  // ignore
+            case BLANK:    // ignore
                 break;
             case DECLARE:
-                // TODO fill in the code
+                // TODO fill in the code --done
+            {
+                token = "flag";
+                while (token != "") { // nextToken returns "" if nothing left
+                    p -= COMMA; // get next token, finish before comma reached
+                    token *= p; //get the last token --variable name
+                    if (p.isValidID(token)) {
+                        p.push(token, local); // sore variable in the symbol table local
+                    } else {
+                        p.errorMsg("bad identifier: " + token);
+                    }
+
+                    p -= COMMA; // get next token (,)
+                    token *= p;
+                    if (!token.empty() && token != ",") {
+                        p.errorMsg("Missing comma");
+                    }
+                }
                 break;
+            }
             case ENDIF:
 // TODO fill in the code
-                break;
+//            {
+//                if(numIfs == )
+//            }
+//                break;
             case ENDPROGRAM: // ran out of code
                 run = false;
                 return; // exit
@@ -280,6 +334,7 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
             case FUNCTION:
             case PROCEDURE:
 // TODO fill in the code
+
                 return; // exit
             case IF:
 // TODO fill in the code
@@ -290,10 +345,25 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
             case PRINT:
                 print = true;
             case PRINTLN:
-                // TODO fill in the code
-                if (!print)
-                    cout << endl;
-                print = false;
+                // TODO fill in the code --done
+
+                p -= COMMA;
+                token *= p;
+                while (token != "") {
+                    if (token.at(0) == '\"') {
+                        // remove quote
+                        p.trim(QUOTE, token);
+                        cout << token;
+                        if (!print)
+                            cout << endl;
+                        print = false;
+                    } else {
+                        // this is expression
+                        cout << parseEquation(p, token, local, success);
+                    }
+                    p -= COMMA;
+                    token *= p;
+                }
                 break;
             case RETURN:
 // TODO fill in the code
@@ -325,12 +395,13 @@ bool load(Program &p) {
         inFile.close();
         return false;
     }
-    cout << "List program (y for yes)? ";
-    getline(cin, t);
-    if (t.length() > 0 && tolower(t[0]) == 'y')
-        read = p.loadProg(inFile, true);
-    else
-        read = p.loadProg(inFile, false);
+    // TODO uncomment this later:
+//    cout << "List program (y for yes)? ";
+//    getline(cin, t);
+//    if (t.length() > 0 && tolower(t[0]) == 'y')
+//        read = p.loadProg(inFile, true);
+//    else
+    read = p.loadProg(inFile, false);
     return read;
 }
 
@@ -342,6 +413,9 @@ bool load(Program &p) {
  by the calculate function. Routine is recursive.
  changed: p, local, success and restore lineNumber
  */
+//    Seems that parseEquation has a few minor clarifications:
+//    1. The string variables of op, and operand1 don't seemed to be used if you follow the logic of the pseudocode
+//    2. The nextFactor will put a tilde (~) on front of a function call, not parseEquation (parseEquation may ensure it is there but that's it).
 int parseEquation(Program &p, string exp, SymbolTable &local, bool &success) {
     Stack<string> postFix;
     Stack<string> operatorStack;
@@ -350,41 +424,33 @@ int parseEquation(Program &p, string exp, SymbolTable &local, bool &success) {
     int temp;
     string s = p.nextFactor(exp), op, operand1;
     // TODO fill in the code
-//    Seems that parseEquation has a few minor clarifications:
-//
-//    1. The string variables of op, and operand1 don't seemed to be used if you follow the logic of the pseudocode
-//
-//    2. The nextFactor will put a tilde (~) on front of a function call, not parseEquation (parseEquation may ensure it is there but that's it).
-    /*
-     while s is not blank
-     {
-        if first character isalpha or isdigit or checkFirstChar(s, FUNCTION_ARG)
-          push s onto postFix
-        else if s is "("
-          push s onto operatorStack
-        else if isOperator(s)
-          while !operatorStack.isEmpty and operatorStack.peek is not a ‘(’ and
-                     precedence(s <= precedence(operatorStack.peek()))
-          {
-               push operatorStack.peek() to postFix
-               operatorStack.pop()
-          }
-          operatorStack.push(s)
-        else if s is ")"
-          while (operatorStack.peek() is not a ‘(’)
-          {
-               push operatorStack.peek() to postFix
-               operatorStack.pop()
-          }
-          operatorStack.pop()     // remove open
-       } end while
-       while (!operatorStack.isEmpty())
-       {
-           push operatorStack.peek() to postFix
-           operatorStack.pop()
-       }
 
-     */
+    while (!s.empty()) {
+        if (isalpha(s.at(0)) || isdigit(s.at(0)) || checkFirstChar(s, FUNCTION_ARG)) {
+            postFix.push(s);
+        } else if (s == "(") {
+            operatorStack.push(s);
+        } else if (p.isOperator(s)) {
+            while (operatorStack.getStackSize()
+                   && operatorStack.peek() != "("
+                   && p.precedence(s) <= p.precedence(operatorStack.peek())) {
+                postFix.push(operatorStack.peek());
+                operatorStack.pop();
+            }
+            operatorStack.push(s);
+        } else if (s == ")") {
+            while (operatorStack.peek() != "(") {
+                postFix.push(operatorStack.peek());
+                operatorStack.pop();
+            }
+            operatorStack.pop(); // remove (
+        }
+    }
+    while(operatorStack.getStackSize()){
+        postFix.push(operatorStack.peek());
+        operatorStack.pop();
+    }
+
     temp = calculate(p, postFix, local, success);
     p.setLineNumber(oldLineNumber);
     return temp;

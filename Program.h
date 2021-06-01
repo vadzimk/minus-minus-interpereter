@@ -122,8 +122,7 @@ s is changed (factor is removed) */
     int peek(string v,
              SymbolTable &localVars); // get a copy of the value of local variable (localVars points to correct place on stack)
     int peek(int i); // know which offset on stack you want
-    void
-    poke(string v, int val, SymbolTable &localVars); // set variable to value and use localVars to find place on stack
+    void poke(string v, int val, SymbolTable &localVars); // set variable to value and use localVars to find place on stack
     void pop(int x); // pop last x items from stack
     int precedence(string s); // returns 1 is s is a ‘*’,’/’, or ‘%’, else 0
 

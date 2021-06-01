@@ -193,8 +193,8 @@ bool Program::loadProg(ifstream &inFile,
         while (!inFile.eof() && size < SIZE) {
             getline(inFile, line);
             temp = line.length();
-            if (temp > 0 && line[temp-1] < ' ')
-                line[temp-1] = ' '; // remove returns
+            if (temp > 0 && line[temp - 1] < ' ')
+                line[temp - 1] = ' '; // remove returns
             progLine[size] = line;
             size++;
             if (list)
@@ -207,10 +207,10 @@ bool Program::loadProg(ifstream &inFile,
             cmd = convertLine(line);
             string method = nextToken(line, END_PAREN);
             if (cmd == FUNCTION) {
-                s =  Symbol(method,lineNumber-1, FUNC);
+                s = Symbol(method, lineNumber - 1, FUNC);
                 methods.add(s);
             } else if (cmd == PROCEDURE) {
-                s =  Symbol(method,lineNumber-1, PROC);
+                s = Symbol(method, lineNumber - 1, PROC);
                 methods.add(s);
             }
         }
@@ -494,7 +494,7 @@ void Program::poke(string v, int val,
                    SymbolTable &localVars) // set variable to value and use localVars to find place on stack
 {
     Symbol s = Symbol(v, 0, VARIABLE);
-    bool success = localVars.get(s);
+    bool success = localVars.get(s); // update symbol table
     if (!success) {
         errorMsg("Invalid variable of " + v);
         return;
