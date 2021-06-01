@@ -320,7 +320,7 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
                 break;
             }
             case ENDIF:
-                // TODO fill in the code  --done
+                // TODO fill in the code --done
             {
                 //Make sure you have a matching if (i.e. numIfs) and decrement numIfs
                 if (numIfs == temp) {
@@ -335,15 +335,22 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
                 run = false;
                 return; // exit
             case ENDWHILE:
-// TODO fill in the code
+            // TODO fill in the code --done
+                if (numWhiles == temp) {
+                    //Decrement numWhiles (it will be increment if while loop done again)
+                    numWhiles--;
+                }
+                else {
+                    p.errorMsg("Missing while");
+                }
                 break;
             case FUNCTION:
             case PROCEDURE:
-// TODO fill in the code
+// TODO fill in the code FUNCITON, PROCEDURE
 
                 return; // exit
             case IF:
-// TODO fill in the code -- not sure
+// TODO fill in the code --done --not sure
             {
                 success = compareBool(p, local);
                 if (success) {
@@ -368,7 +375,7 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
                 break;
             }
             case INPUT:
-                // TODO fill in the code
+                // TODO fill in the code INPUT
                 break;
             case PRINT:
                 print = true;
@@ -394,7 +401,7 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
                 }
                 break;
             case RETURN:
-// TODO fill in the code
+// TODO fill in the code RETURN
                 return;
             case UNKNOWN:
                 token *= p;
@@ -402,7 +409,7 @@ void execute(Program &p, SymbolTable &local, int lineStart, int numParms) {
                     p.errorMsg("Bad command");
                 break;
             case WHILE:
-// TODO fill in the code
+// TODO fill in the code WHILE
                 break;
         }
     }
@@ -423,7 +430,7 @@ bool load(Program &p) {
         inFile.close();
         return false;
     }
-    // TODO uncomment this later:
+    // TODO uncomment this later  --done
 //    cout << "List program (y for yes)? ";
 //    getline(cin, t);
 //    if (t.length() > 0 && tolower(t[0]) == 'y')
@@ -451,7 +458,7 @@ int parseEquation(Program &p, string exp, SymbolTable &local, bool &success) {
     int oldLineNumber = p.getLineNumber();
     int temp;
     string s = p.nextFactor(exp), op, operand1;
-    // TODO fill in the code
+    // TODO fill in the code --done
 
     while (!s.empty()) {
         if (isalpha(s.at(0)) || isdigit(s.at(0)) || checkFirstChar(s, FUNCTION_ARG)) {
